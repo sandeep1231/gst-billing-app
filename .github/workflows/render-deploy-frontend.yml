@@ -1,0 +1,24 @@
+name: Deploy Frontend to Render
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'frontend/**'
+      - 'render.yaml'
+      - '.github/workflows/render-deploy-frontend.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render Deploy Hook
+        env:
+          RENDER_FRONTEND_DEPLOY_HOOK: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$RENDER_FRONTEND_DEPLOY_HOOK" ]; then
+            echo "Missing secret RENDER_FRONTEND_DEPLOY_HOOK" >&2
+            exit 1
+          fi
+          curl -fsSL -X POST "$RENDER_FRONTEND_DEPLOY_HOOK"

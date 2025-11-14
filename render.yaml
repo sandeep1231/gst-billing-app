@@ -1,19 +1,10 @@
 services:
   - type: web
-    name: gst-billing-app
+    name: gst-billing-backend
     env: node
-    rootDir: .
-    buildCommand: |
-      cd backend
-      npm ci
-      npm run build
-      cd ../frontend
-      npm ci
-      npm run build
-      cd ..
-      mkdir -p backend/dist/public
-      cp -r frontend/dist/frontend/* backend/dist/public/
-    startCommand: cd backend && npm start
+    rootDir: backend
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
     autoDeploy: true
     envVars:
       - key: MONGO_URI
@@ -21,6 +12,11 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: ORIGIN
-        value: https://gst-billing-app.onrender.com
+        value: https://gst-billing-frontend.onrender.com
       - key: NODE_VERSION
         value: 18.20.4
+  - type: static
+    name: gst-billing-frontend
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    publishPath: dist/frontend
