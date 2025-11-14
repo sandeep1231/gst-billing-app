@@ -1,0 +1,1 @@
+{"ast":null,"code":"export const authInterceptor = (req, next) => {\n  const token = localStorage.getItem('auth_token');\n  if (token) {\n    req = req.clone({\n      setHeaders: {\n        Authorization: `Bearer ${token}`\n      }\n    });\n  }\n  return next(req);\n};","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}

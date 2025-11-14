@@ -1,0 +1,123 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="row g-3">
+  <div class="col-12">
+    <label class="form-label">Customer</label>
+    <input
+      type="text"
+      class="form-control"
+      formControlName="customer"
+      [ngbTypeahead]="search"
+      [resultFormatter]="formatter"
+      [inputFormatter]="formatter"
+      placeholder="Search customer by name/mobile (min 2 chars)"
+      (selectItem)="onCustomerSelected($event.item)"
+    />
+    <div class="form-text">Select existing or leave and fill details below.</div>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Name</label>
+    <input type="text" class="form-control" formControlName="customerName" />
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Mobile</label>
+    <input type="text" class="form-control" formControlName="mobile" />
+  </div>
+  <div class="col-12">
+    <label class="form-label">Address</label>
+    <textarea class="form-control" rows="2" formControlName="address"></textarea>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">GSTIN</label>
+    <input type="text" class="form-control" formControlName="gstin" />
+  </div>
+
+  <div class="col-12">
+    <label class="form-label">Items</label>
+    <!-- Desktop/tablet view -->
+    <div class="table-responsive d-none d-md-block">
+      <table class="table table-sm align-middle mb-2">
+        <thead>
+          <tr>
+            <th style="width:32%">Product</th>
+            <th style="width:10%">Qty</th>
+            <th style="width:15%">Price</th>
+            <th style="width:12%">GST %</th>
+            <th style="width:18%" class="text-end">Amount</th>
+            <th style="width:13%"></th>
+          </tr>
+        </thead>
+        <tbody formArrayName="items">
+          <tr *ngFor="let it of items.controls; let i = index" [formGroupName]="i">
+            <td>
+              <input type="text" class="form-control form-control-sm" formControlName="name"
+                     [ngbTypeahead]="productSearch" [resultFormatter]="productFormatter" [inputFormatter]="productFormatter"
+                     (selectItem)="onProductSelected(i, $event.item)" placeholder="Search product" />
+            </td>
+            <td><input type="number" class="form-control form-control-sm" formControlName="qty" min="1" /></td>
+            <td><input type="number" class="form-control form-control-sm" formControlName="price" step="0.01" /></td>
+            <td><input type="number" class="form-control form-control-sm" formControlName="gstPercent" step="0.1" /></td>
+            <td class="text-end">{{ (it.value.qty || 0) * (it.value.price || 0) | number:'1.2-2' }}</td>
+            <td class="text-end">
+              <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeItem(i)">Remove</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile stacked view -->
+    <div class="d-md-none" formArrayName="items">
+      <div class="card mb-2" *ngFor="let it of items.controls; let i = index" [formGroupName]="i">
+        <div class="card-body p-2">
+          <div class="mb-2">
+            <label class="form-label small mb-1">Product</label>
+            <input type="text" class="form-control form-control-sm" formControlName="name"
+                   [ngbTypeahead]="productSearch" [resultFormatter]="productFormatter" [inputFormatter]="productFormatter"
+                   (selectItem)="onProductSelected(i, $event.item)" placeholder="Search product" />
+          </div>
+          <div class="row g-2">
+            <div class="col-4">
+              <label class="form-label small mb-1">Qty</label>
+              <input type="number" class="form-control form-control-sm" formControlName="qty" min="1" />
+            </div>
+            <div class="col-4">
+              <label class="form-label small mb-1">Price</label>
+              <input type="number" class="form-control form-control-sm" formControlName="price" step="0.01" />
+            </div>
+            <div class="col-4">
+              <label class="form-label small mb-1">GST %</label>
+              <input type="number" class="form-control form-control-sm" formControlName="gstPercent" step="0.1" />
+            </div>
+            <div class="col-6 d-flex align-items-center"><span class="text-muted small">Amount:</span>&nbsp;<strong>₹{{ (it.value.qty || 0) * (it.value.price || 0) | number:'1.2-2' }}</strong></div>
+            <div class="col-6 text-end">
+              <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeItem(i)">Remove</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-outline-primary btn-sm" (click)="addItem()">Add Item</button>
+  </div>
+
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body d-flex justify-content-end gap-4">
+        <div>Sub Total: <strong>₹{{ subTotal | number:'1.2-2' }}</strong></div>
+        <div>Tax: <strong>₹{{ totalTax | number:'1.2-2' }}</strong></div>
+        <div>Grand Total: <strong>₹{{ total | number:'1.2-2' }}</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <label class="form-label">Notes</label>
+    <textarea class="form-control" rows="2" formControlName="notes"></textarea>
+  </div>
+
+  <div class="col-12 d-flex gap-2">
+    <button class="btn btn-primary" type="submit">Create Invoice</button>
+    <button class="btn btn-outline-success" type="button" (click)="downloadPdf()" [disabled]="!lastInvoiceId">Download PDF</button>
+    <button type="button" class="btn btn-outline-secondary" (click)="addItem()">Add Item</button>
+  </div>
+</form>

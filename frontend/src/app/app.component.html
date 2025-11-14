@@ -1,0 +1,38 @@
+<div class="d-flex flex-column min-vh-100">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand" routerLink="/">GST Billing</a>
+      <button class="navbar-toggler" type="button" (click)="toggleNav()" [attr.aria-expanded]="navOpen" aria-controls="nav" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div id="nav" class="navbar-collapse" [class.collapse]="true" [class.show]="navOpen">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" routerLink="/dashboard" routerLinkActive="active" (click)="closeNav()">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/products" routerLinkActive="active" (click)="closeNav()">Products</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/purchases" routerLinkActive="active" (click)="closeNav()">Purchases</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/sales" routerLinkActive="active" (click)="closeNav()">Sales</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/stock" routerLinkActive="active" (click)="closeNav()">Stock</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/customers" routerLinkActive="active" (click)="closeNav()">Customers</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/invoices" routerLinkActive="active" (click)="closeNav()">Invoices</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/reports" routerLinkActive="active" (click)="closeNav()">Reports</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/receivables" routerLinkActive="active" (click)="closeNav()">Receivables</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/payables" routerLinkActive="active" (click)="closeNav()">Payables</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/balance-sheet" routerLinkActive="active" (click)="closeNav()">Balance Sheet</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/guide" routerLinkActive="active" (click)="closeNav()">Guide</a></li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item" *ngIf="auth.isLoggedIn()"><a class="nav-link" routerLink="/settings" routerLinkActive="active" (click)="closeNav()">Settings</a></li>
+          <li class="nav-item" *ngIf="!auth.isLoggedIn()"><a class="nav-link" routerLink="/login" (click)="closeNav()">Login</a></li>
+          <li class="nav-item" *ngIf="!auth.isLoggedIn()"><a class="nav-link" routerLink="/register" (click)="closeNav()">Sign up</a></li>
+          <li class="nav-item" *ngIf="auth.isLoggedIn()"><button class="btn btn-sm btn-outline-light" (click)="logout(); closeNav()">Logout</button></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="flex-grow-1">
+    <div class="container my-3">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+  <app-footer></app-footer>
+</div>
