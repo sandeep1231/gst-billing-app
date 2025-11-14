@@ -30,7 +30,8 @@ app.get('/health', (req: Request, res: Response) => res.json({ ok: true }));
 registerRoutes(app);
 
 // Serve Angular build (single-service deployment)
-const frontendDist = path.resolve(__dirname, '../../frontend/dist/gst-billing-frontend');
+// Angular build output path (see frontend/angular.json outputPath: dist/frontend)
+const frontendDist = path.resolve(__dirname, '../../frontend/dist/frontend');
 app.use(express.static(frontendDist));
 
 // SPA fallback: send index.html for unmatched GET routes
