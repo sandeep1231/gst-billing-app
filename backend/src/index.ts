@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import path from 'path';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
@@ -22,10 +23,20 @@ app.use(cors({ origin: origins, credentials: true }));
 
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 200 }));
 
-app.get('/', (req: Request, res: Response) => res.json({ ok: true }));
+// Health endpoint (keep JSON response separate from SPA)
+app.get('/health', (req: Request, res: Response) => res.json({ ok: true }));
 
 // register API routes
 registerRoutes(app);
+
+// Serve Angular build (single-service deployment)
+const frontendDist = path.resolve(__dirname, '../../frontend/dist/gst-billing-frontend');
+app.use(express.static(frontendDist));
+
+// SPA fallback: send index.html for unmatched GET routes
+app.get('*', (req: Request, res: Response) => {
+  res.sendFile(path.join(frontendDist, 'index.html'));
+});
 
 const port = process.env.PORT || 4000;
 

@@ -1,9 +1,14 @@
 services:
   - type: web
-    name: gst-billing-backend
+    name: gst-billing-app
     env: node
     rootDir: backend
-    buildCommand: npm install && npm run build
+    buildCommand: |
+      npm ci
+      npm run build
+      cd ../frontend
+      npm ci
+      npm run build
     startCommand: npm start
     autoDeploy: true
     envVars:
@@ -12,9 +17,6 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: ORIGIN
-        value: https://gst-billing-frontend.onrender.com
-  - type: static
-    name: gst-billing-frontend
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    publishPath: dist/gst-billing-frontend
+        value: https://gst-billing-app.onrender.com
+      - key: NODE_VERSION
+        value: 18.20.4
