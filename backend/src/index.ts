@@ -30,13 +30,14 @@ app.get('/health', (req: Request, res: Response) => res.json({ ok: true }));
 registerRoutes(app);
 
 // Serve Angular build (single-service deployment)
-// Angular build output path (see frontend/angular.json outputPath: dist/frontend)
-const frontendDist = path.resolve(__dirname, '../../frontend/dist/frontend');
-app.use(express.static(frontendDist));
+// In single-service Render deploy with rootDir=backend, only backend/ is retained.
+// We copy the built Angular dist into ./dist/public during build.
+const publicDist = path.resolve(__dirname, 'public');
+app.use(express.static(publicDist));
 
-// SPA fallback: send index.html for unmatched GET routes
+// SPA fallback for client-side routing
 app.get('*', (req: Request, res: Response) => {
-  res.sendFile(path.join(frontendDist, 'index.html'));
+  res.sendFile(path.join(publicDist, 'index.html'));
 });
 
 const port = process.env.PORT || 4000;

@@ -9,6 +9,10 @@ services:
       cd ../frontend
       npm ci
       npm run build
+      cd ..
+      # copy angular build into backend/dist/public for runtime availability
+      mkdir -p backend/dist/public
+      cp -r frontend/dist/frontend/* backend/dist/public/
     startCommand: npm start
     autoDeploy: true
     envVars:
